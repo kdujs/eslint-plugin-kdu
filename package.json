@@ -1,0 +1,30 @@
+{
+  "name": "eslint-plugin-kdu",
+  "version": "1.0.0-alpha.1",
+  "description": "eslint plugin for kdu.js projects",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kdujs/eslint-plugin-kdu.git"
+  },
+  "keywords": [
+    "eslint",
+    "plugin",
+    "eslint-plugin",
+    "eslintplugin",
+    "kdu"
+  ],
+  "author": "NKDuy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kdujs/eslint-plugin-kdu/issues"
+  },
+  "homepage": "https://github.com/kdujs/eslint-plugin-kdu#readme",
+  "peerDependencies": {
+    "eslint": "^2.0.0 || ^3.0.0"
+  },
+  "dependencies": {
+    "eslint-plugin-html": "^1.5.2",
+    "eslint-plugin-react": "^6.2.0"
+  }
+}
