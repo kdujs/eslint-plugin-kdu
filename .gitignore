@@ -1,7 +1,2 @@
-/.nyc_output
-/coverage
-/tests/integrations/*/node_modules
-/node_modules
-/test.*
-yarn.lock
-.idea
+node_modules
+.DS_Store
