@@ -1,0 +1,61 @@
+/**
+ * @author NKDuy
+ * See LICENSE file in root directory for full license.
+ */
+'use strict'
+
+/*
+This script updates `lib/index.js` file from rule's meta data.
+*/
+
+const fs = require('fs')
+const path = require('path')
+const eslint = require('eslint')
+const rules = require('./lib/rules')
+const configs = require('./lib/configs')
+
+// Update files.
+const filePath = path.resolve(__dirname, '../lib/index.js')
+const content = `/*
+ * IMPORTANT!
+ * This file has been automatically generated,
+ * in order to update its content execute "npm run update"
+ */
+'use strict'
+
+module.exports = {
+  rules: {
+    ${rules
+      .map((rule) => `'${rule.name}': require('./rules/${rule.name}')`)
+      .join(',\n')}
+  },
+  configs: {
+    ${configs
+      .map((config) => `'${config}': require('./configs/${config}')`)
+      .join(',\n')}
+  },
+  processors: {
+    '.kdu': require('./processor')
+  },
+  environments: {
+    'setup-compiler-macros': {
+      globals: {
+        defineProps: 'readonly',
+        defineEmits: 'readonly',
+        defineExpose: 'readonly',
+        withDefaults: 'readonly'
+      }
+    }
+  }
+}
+`
+fs.writeFileSync(filePath, content)
+
+// Format files.
+async function format() {
+  const linter = new eslint.ESLint({ fix: true })
+  const report = await linter.lintFiles([filePath])
+  eslint.ESLint.outputFixes(report)
+}
+
+format()
