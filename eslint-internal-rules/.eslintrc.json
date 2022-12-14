@@ -1,14 +1,6 @@
 {
   "rules": {
-    "no-invalid-meta-docs-categories": "error",
+    "consistent-docs-description": "error",
     "no-invalid-meta": "error"
-  },
-  "overrides": [
-    {
-      "files": ["*.json"],
-      "rules": {
-        "no-invalid-meta": "off"
-      }
-    }
-  ]
+  }
 }

@@ -13,51 +13,31 @@ const path = require('path')
 const eslint = require('eslint')
 const categories = require('./lib/categories')
 
-const errorCategories = ['base', 'essential', 'kdu3-essential']
-
-const extendsCategories = {
-  base: null,
-  essential: 'base',
-  'kdu3-essential': 'base',
-  'strongly-recommended': 'essential',
-  'kdu3-strongly-recommended': 'kdu3-essential',
-  recommended: 'strongly-recommended',
-  'kdu3-recommended': 'kdu3-strongly-recommended',
-  'use-with-caution': 'recommended',
-  'kdu3-use-with-caution': 'kdu3-recommended'
-}
-
-function formatRules(rules, categoryId) {
+function formatRules (rules) {
   const obj = rules.reduce((setting, rule) => {
-    let options = errorCategories.includes(categoryId) ? 'error' : 'warn'
-    const defaultOptions =
-      rule.meta && rule.meta.docs && rule.meta.docs.defaultOptions
-    if (defaultOptions) {
-      const v = categoryId.startsWith('kdu3') ? 3 : 2
-      const defaultOption = defaultOptions[`kdu${v}`]
-      if (defaultOption) {
-        options = [options, ...defaultOption]
-      }
-    }
-    setting[rule.ruleId] = options
+    setting[rule.ruleId] = 'error'
     return setting
   }, {})
   return JSON.stringify(obj, null, 2)
 }
 
-function formatCategory(category) {
-  const extendsCategoryId = extendsCategories[category.categoryId]
-  if (extendsCategoryId == null) {
+function formatCategory (category, prevCategory) {
+  if (prevCategory == null) {
     return `/*
  * IMPORTANT!
  * This file has been automatically generated,
- * in order to update its content execute "npm run update"
+ * in order to update it's content execute "npm run update"
  */
 module.exports = {
+  root: true,
   parser: require.resolve('kdu-eslint-parser'),
   parserOptions: {
-    ecmaVersion: 2020,
-    sourceType: 'module'
+    ecmaVersion: 2015,
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
+      experimentalObjectRestSpread: true
+    }
   },
   env: {
     browser: true,
@@ -66,36 +46,32 @@ module.exports = {
   plugins: [
     'kdu'
   ],
-  rules: ${formatRules(category.rules, category.categoryId)}
+  rules: ${formatRules(category.rules)}
 }
 `
   }
   return `/*
  * IMPORTANT!
  * This file has been automatically generated,
- * in order to update its content execute "npm run update"
+ * in order to update it's content execute "npm run update"
  */
 module.exports = {
-  extends: require.resolve('./${extendsCategoryId}'),
-  rules: ${formatRules(category.rules, category.categoryId)}
+  extends: require.resolve('./${prevCategory.categoryId}'),
+  rules: ${formatRules(category.rules)}
 }
 `
 }
 
 // Update files.
 const ROOT = path.resolve(__dirname, '../lib/configs/')
-categories.forEach((category) => {
+categories.forEach((category, index) => {
   const filePath = path.join(ROOT, `${category.categoryId}.js`)
-  const content = formatCategory(category)
+  const content = formatCategory(category, categories[index - 1])
 
   fs.writeFileSync(filePath, content)
 })
 
 // Format files.
-async function format() {
-  const linter = new eslint.ESLint({ fix: true })
-  const report = await linter.lintFiles([ROOT])
-  eslint.ESLint.outputFixes(report)
-}
-
-format()
+const linter = new eslint.CLIEngine({ fix: true })
+const report = linter.executeOnFiles([ROOT])
+eslint.CLIEngine.outputFixes(report)

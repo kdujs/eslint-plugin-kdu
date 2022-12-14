@@ -2,4 +2,4 @@
 /coverage
 /node_modules
 /tests/fixtures
-/tests/integrations/eslint-plugin-import
+/tests/integrations/*/node_modules
