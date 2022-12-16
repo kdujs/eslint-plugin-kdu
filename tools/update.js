@@ -7,4 +7,4 @@
 require('./update-lib-configs')
 require('./update-lib-index')
 require('./update-docs')
-require('./update-readme')
+require('./update-docs-rules-index')
