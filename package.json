@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "eslint-utils": "^3.0.0",
-    "kdu-eslint-parser": "^8.0.0",
+    "kdu-eslint-parser": "^8.0.1",
     "natural-compare": "^1.4.0",
     "semver": "^7.3.5"
   },
