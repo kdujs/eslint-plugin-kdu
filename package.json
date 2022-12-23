@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-kdu",
-  "version": "8.0.1",
+  "version": "8.0.2",
   "description": "Official ESLint plugin for Kdu.js",
   "main": "lib/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "lint": "eslint . --rulesdir eslint-internal-rules",
     "lint:fix": "eslint . --rulesdir eslint-internal-rules --fix",
     "tsc": "tsc",
-    "preversion": "npm test && git add .",
+    "preversion": "git add .",
     "version": "env-cmd -e version npm run update && npm run lint -- --fix && git add .",
     "update": "node ./tools/update.js"
   },
