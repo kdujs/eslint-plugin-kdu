@@ -12,32 +12,50 @@ const fs = require('fs')
 const path = require('path')
 const eslint = require('eslint')
 const rules = require('./lib/rules')
-const categories = require('./lib/categories')
+const configs = require('./lib/configs')
 
 // Update files.
 const filePath = path.resolve(__dirname, '../lib/index.js')
 const content = `/*
  * IMPORTANT!
  * This file has been automatically generated,
- * in order to update it's content execute "npm run update"
+ * in order to update its content execute "npm run update"
  */
 'use strict'
 
 module.exports = {
   rules: {
-    ${rules.map(rule => `'${rule.name}': require('./rules/${rule.name}')`).join(',\n')}
+    ${rules
+      .map((rule) => `'${rule.name}': require('./rules/${rule.name}')`)
+      .join(',\n')}
   },
   configs: {
-    ${categories.map(category => `'${category.categoryId}': require('./configs/${category.categoryId}')`).join(',\n')}
+    ${configs
+      .map((config) => `'${config}': require('./configs/${config}')`)
+      .join(',\n')}
   },
   processors: {
     '.kdu': require('./processor')
+  },
+  environments: {
+    'setup-compiler-macros': {
+      globals: {
+        defineProps: 'readonly',
+        defineEmits: 'readonly',
+        defineExpose: 'readonly',
+        withDefaults: 'readonly'
+      }
+    }
   }
 }
 `
 fs.writeFileSync(filePath, content)
 
 // Format files.
-const linter = new eslint.CLIEngine({ fix: true })
-const report = linter.executeOnFiles([filePath])
-eslint.CLIEngine.outputFixes(report)
+async function format() {
+  const linter = new eslint.ESLint({ fix: true })
+  const report = await linter.lintFiles([filePath])
+  eslint.ESLint.outputFixes(report)
+}
+
+format()
